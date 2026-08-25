@@ -52,7 +52,7 @@
     </div>
   </div>
 
-  <!-- JAVÍTVA: unpkg hálózat használata gstatic helyett -->
+  <!-- CSAK ez a tiszta modul maradt, nincs semmilyen más script hivatkozás! -->
   <script type="module">
     import { initializeApp } from "https://unpkg.com";
     import { getFirestore, collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp } from "https://unpkg.com";
@@ -80,7 +80,6 @@
     const sendBtn = document.getElementById('send-btn');
 
     joinBtn.addEventListener('click', () => {
-      console.log("Gombnyomás sikeresen regisztrálva!");
       const name = usernameInput.value.trim();
       if (name.length >= 2) {
         CurrentUser = name;
