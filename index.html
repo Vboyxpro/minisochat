@@ -52,10 +52,10 @@
     </div>
   </div>
 
-  <!-- JAVÍTVA: Kizárólag tiszta, közvetlen moduláris betöltés -->
+  <!-- JAVÍTVA: unpkg hálózat használata gstatic helyett -->
   <script type="module">
-    import { initializeApp } from "https://gstatic.com";
-    import { getFirestore, collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp } from "https://gstatic.com";
+    import { initializeApp } from "https://unpkg.com";
+    import { getFirestore, collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp } from "https://unpkg.com";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDuSzQ7zSdIjIvzq8JJeu0Wuxzjhj6P3Y0",
@@ -80,6 +80,7 @@
     const sendBtn = document.getElementById('send-btn');
 
     joinBtn.addEventListener('click', () => {
+      console.log("Gombnyomás sikeresen regisztrálva!");
       const name = usernameInput.value.trim();
       if (name.length >= 2) {
         CurrentUser = name;
