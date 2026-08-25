@@ -4,11 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Minisoc Chat</title>
-  
-  <!-- SCRIPT BETÖLTÉSEK: Ezeknek itt kell lenniük a head-ben -->
-  <script src="https://gstatic.com"></script>
-  <script src="https://gstatic.com"></script>
-
   <style>
     :root {
       --bg-color: #1a1a24;
@@ -17,8 +12,6 @@
       --primary-hover: #0056b3;
       --text: #ffffff;
       --text-muted: #a0a0b0;
-      --msg-in: #323246;
-      --msg-out: #007bff;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
     body { background-color: var(--bg-color); color: var(--text); height: 100vh; display: flex; justify-content: center; align-items: center; }
@@ -59,20 +52,24 @@
     </div>
   </div>
 
-  <script>
-    // A TE SAJÁT CONFIGOD (Ellenőrizd, hogy a projektID stimmel-e)
+  <!-- MODULÁRIS JAVASCRIPT: Ez kezeli a helyi fájl korlátozásokat -->
+  <script type="module">
+    import { initializeApp } from "https://gstatic.com";
+    import { getFirestore, collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp } from "https://gstatic.com";
+
+    // A TE SAJÁT CONFIGOD
     const firebaseConfig = {
       apiKey: "AIzaSyDuSzQ7zSdIjIvzq8JJeu0Wuxzjhj6P3Y0",
-      authDomain: "://firebaseapp.com",
+      authDomain: "minisoc-chat.firebaseapp.com",
       projectId: "minisoc-chat",
       storageBucket: "minisoc-chat.firebasestorage.app",
       messagingSenderId: "585133612559",
       appId: "1:585133612559:web:12ad106b8490381a470d7a"
     };
 
-    // Firebase indítása
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+    // Firebase indítása modern módon
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
     let CurrentUser = "";
 
@@ -86,11 +83,10 @@
 
     // Belépés gomb eseménykezelője
     joinBtn.addEventListener('click', () => {
-      console.log("Gombnyomás érzékelve!");
+      console.log("Gombnyomás sikeresen regisztrálva!");
       const name = usernameInput.value.trim();
       
       if (name.length >= 2) {
-        console.log("Sikeres névellenőrzés:", name);
         CurrentUser = name;
         nameOverlay.style.display = 'none';
         userDisplay.innerText = `Felhasználó: ${CurrentUser}`;
@@ -100,28 +96,26 @@
       }
     });
 
-    // Enter gomb kezelése a névválasztónál
     usernameInput.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') joinBtn.click();
     });
 
     // Üzenetküldés
-    function sendMessage() {
+    async function sendMessage() {
       const text = msgInput.value.trim();
       if (!text) return;
 
-      db.collection('messages').add({
-        user: CurrentUser,
-        message: text,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      })
-      .then(() => {
+      try {
+        await addDoc(collection(db, 'messages'), {
+          user: CurrentUser,
+          message: text,
+          timestamp: serverTimestamp()
+        });
         msgInput.value = "";
         msgInput.focus();
-      })
-      .catch(err => {
+      } catch (err) {
         console.error("Küldési hiba:", err);
-      });
+      }
     }
 
     sendBtn.addEventListener('click', sendMessage);
@@ -129,26 +123,25 @@
       if (e.key === 'Enter') sendMessage();
     });
 
-    // Üzenetek betöltése
+    // Üzenetek valós idejű betöltése
     function loadMessages() {
-      db.collection('messages')
-        .orderBy('timestamp', 'asc')
-        .limitToLast(100)
-        .onSnapshot(snapshot => {
-          chatMessages.innerHTML = "";
-          snapshot.forEach(doc => {
-            const data = doc.data();
-            if (!data.user || !data.message) return;
+      const q = query(collection(db, 'messages'), orderBy('timestamp', 'asc'), limit(100));
+      
+      onSnapshot(q, (snapshot) => {
+        chatMessages.innerHTML = "";
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          if (!data.user || !data.message) return;
 
-            const msgDiv = document.createElement('div');
-            msgDiv.style.margin = "5px 0";
-            msgDiv.innerHTML = `<strong>${escapeHTML(data.user)}:</strong> ${escapeHTML(data.message)}`;
-            chatMessages.appendChild(msgDiv);
-          });
-          chatMessages.scrollTop = chatMessages.scrollHeight;
-        }, error => {
-          console.error("Beolvasási hiba:", error);
+          const msgDiv = document.createElement('div');
+          msgDiv.style.margin = "5px 0";
+          msgDiv.innerHTML = `<strong>${escapeHTML(data.user)}:</strong> ${escapeHTML(data.message)}`;
+          chatMessages.appendChild(msgDiv);
         });
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }, (error) => {
+        console.error("Beolvasási hiba:", error);
+      });
     }
 
     function escapeHTML(str) {
