@@ -255,15 +255,14 @@
 
   <script>
     // Firebase inicializálása
-    const firebaseConfig = {
-      apiKey: "AIzaSyDuSzQ7zSdIjIvzq8JJeu0Wuxzjhj6P3Y0",
-      authDomain: "://firebaseapp.com", // JAVÍTVA: hiányzó domain javítása
-      projectId: "minisoc-chat",
-      storageBucket: "minisoc-chat.firebasestorage.app",
-      messagingSenderId: "585133612559",
-      appId: "1:585133612559:web:12ad106b8490381a470d7a"
-    };
-
+   const firebaseConfig = {
+  apiKey: "AIzaSyDuSzQ7zSdIjIvzq8JJeu0Wuxzjhj6P3Y0",
+  authDomain: "minisoc-chat.firebaseapp.com",
+  projectId: "minisoc-chat",
+  storageBucket: "minisoc-chat.firebasestorage.app",
+  messagingSenderId: "585133612559",
+  appId: "1:585133612559:web:12ad106b8490381a470d7a"
+};
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
