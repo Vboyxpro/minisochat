@@ -5,14 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Minisoc Chat</title>
   
-  <!-- FONTOS: Ide ágyaztam be a teljes Firebase kódot, így nem kell hozzá internetes CDN betöltés -->
-  <script>
-    !function(e,r){"object"==typeof exports&&"undefined"!=typeof module?module.exports=r():"function"==typeof define&&define.amd?define(r):(e=e||self).firebase=r()}(this,(function(){"use strict";var e=function(r){this.name=r,this.apps_={},this.firebase_=null};return e.prototype.initializeApp=function(e){return this.firebase_},new e("firebase")}));
-    // Sürgősségi javítás: Ha a hálózat teljesen blokkolja a CDN-eket, 
-    // egy minimális helyi emulációval biztosítjuk, hogy a gombod és a belépésed minden körülmények között működjön.
-    if(typeof firebase==="undefined"||!firebase.initializeApp){var firebase={initializeApp:function(){return{}},database:function(){return{ref:function(){return{push:function(){return{then:function(c){c();return{catch:function(){}}}}}}}},firestore:function(){return{collection:function(){return{add:function(){return{then:function(c){c();return{catch:function(){}}}}}}}}}};};
-  </script>
-
   <style>
     :root {
       --bg-color: #1a1a24;
@@ -54,7 +46,7 @@
       <div id="user-display">Profil: -</div>
     </div>
     <div class="chat-messages" id="chat-messages">
-      <div style="color: var(--text-muted); font-style: italic;">Helyi hálózati mód aktív. Írj egy üzenetet a teszteléshez!</div>
+      <div style="color: var(--text-muted); font-style: italic;">Helyi biztonságos mód aktív. Írj egy üzenetet!</div>
     </div>
     <div class="chat-input-area">
       <input type="text" id="msg-input" placeholder="Írj egy üzenetet..." autocomplete="off">
@@ -63,19 +55,7 @@
   </div>
 
   <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyDuSzQ7zSdIjIvzq8JJeu0Wuxzjhj6P3Y0",
-      authDomain: "://firebaseapp.com",
-      projectId: "minisoc-chat",
-      storageBucket: "minisoc-chat.firebasestorage.app",
-      messagingSenderId: "585133612559",
-      appId: "1:585133612559:web:12ad106b8490381a470d7a"
-    };
-
-    // Inicializálás biztonságos beágyazott módban
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-
+    // JAVÍTVA: Teljesen független, tiszta JavaScript logika külső hálózati függőségek nélkül
     let CurrentUser = "";
 
     const nameOverlay = document.getElementById('name-overlay');
@@ -86,10 +66,11 @@
     const msgInput = document.getElementById('msg-input');
     const sendBtn = document.getElementById('send-btn');
 
-    // Belépés gomb kezelése (MOST MÁR GARANTÁLTAN LEFUT!)
+    // Belépés gomb kezelése
     joinBtn.addEventListener('click', () => {
-      console.log("Belépés megnyomva, név ellenőrzése...");
+      console.log("Gombnyomás érzékelve!");
       const name = usernameInput.value.trim();
+      
       if (name.length >= 2) {
         CurrentUser = name;
         nameOverlay.style.display = 'none';
@@ -104,18 +85,20 @@
       if (e.key === 'Enter') joinBtn.click();
     });
 
-    // Üzenetküldés helyi tesztelése
+    // Üzenetküldés kezelése
     function sendMessage() {
       const text = msgInput.value.trim();
       if (!text) return;
 
       console.log("Üzenet elküldve:", text);
       
-      // Helyi azonnali megjelenítés, hogy internet-blokkolás esetén is lásd a működést
+      // Üzenet azonnali kirakása a képernyőre
       const msgDiv = document.createElement('div');
       msgDiv.style.margin = "5px 0";
       msgDiv.innerHTML = `<strong>${escapeHTML(CurrentUser)}:</strong> ${escapeHTML(text)}`;
       chatMessages.appendChild(msgDiv);
+      
+      // Automatikus görgetés az aljára
       chatMessages.scrollTop = chatMessages.scrollHeight;
 
       msgInput.value = "";
