@@ -52,22 +52,20 @@
     </div>
   </div>
 
-  <!-- MODULÁRIS JAVASCRIPT: Ez kezeli a helyi fájl korlátozásokat -->
+  <!-- JAVÍTVA: Kizárólag tiszta, közvetlen moduláris betöltés -->
   <script type="module">
     import { initializeApp } from "https://gstatic.com";
     import { getFirestore, collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp } from "https://gstatic.com";
 
-    // A TE SAJÁT CONFIGOD
     const firebaseConfig = {
       apiKey: "AIzaSyDuSzQ7zSdIjIvzq8JJeu0Wuxzjhj6P3Y0",
-      authDomain: "minisoc-chat.firebaseapp.com",
+      authDomain: "://firebaseapp.com",
       projectId: "minisoc-chat",
       storageBucket: "minisoc-chat.firebasestorage.app",
       messagingSenderId: "585133612559",
       appId: "1:585133612559:web:12ad106b8490381a470d7a"
     };
 
-    // Firebase indítása modern módon
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
@@ -81,11 +79,8 @@
     const msgInput = document.getElementById('msg-input');
     const sendBtn = document.getElementById('send-btn');
 
-    // Belépés gomb eseménykezelője
     joinBtn.addEventListener('click', () => {
-      console.log("Gombnyomás sikeresen regisztrálva!");
       const name = usernameInput.value.trim();
-      
       if (name.length >= 2) {
         CurrentUser = name;
         nameOverlay.style.display = 'none';
@@ -100,7 +95,6 @@
       if (e.key === 'Enter') joinBtn.click();
     });
 
-    // Üzenetküldés
     async function sendMessage() {
       const text = msgInput.value.trim();
       if (!text) return;
@@ -123,7 +117,6 @@
       if (e.key === 'Enter') sendMessage();
     });
 
-    // Üzenetek valós idejű betöltése
     function loadMessages() {
       const q = query(collection(db, 'messages'), orderBy('timestamp', 'asc'), limit(100));
       
