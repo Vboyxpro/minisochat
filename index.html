@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Minisoc Chat</title>
   
-  <!-- JAVÍTVA: Firebase SDK-k helyes betöltése (v8 kompatibilis verziók) -->
+  <!-- SCRIPT BETÖLTÉSEK: Ezeknek itt kell lenniük a head-ben -->
   <script src="https://gstatic.com"></script>
   <script src="https://gstatic.com"></script>
 
@@ -20,208 +20,18 @@
       --msg-in: #323246;
       --msg-out: #007bff;
     }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    body {
-      background-color: var(--bg-color);
-      color: var(--text);
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    /* Névkérő ablak */
-    #name-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: var(--bg-color);
-      z-index: 999;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-    }
-
-    .login-box {
-      background-color: var(--card-bg);
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-      text-align: center;
-      max-width: 400px;
-      width: 100%;
-    }
-
-    .login-box h2 {
-      margin-bottom: 10px;
-      color: var(--text);
-    }
-
-    .login-box p {
-      color: var(--text-muted);
-      margin-bottom: 20px;
-      font-size: 14px;
-    }
-
-    input[type="text"] {
-      width: 100%;
-      padding: 12px 16px;
-      background-color: var(--bg-color);
-      border: 2px solid #323246;
-      border-radius: 8px;
-      color: var(--text);
-      font-size: 16px;
-      outline: none;
-      margin-bottom: 15px;
-      transition: border-color 0.2s;
-    }
-
-    input[type="text"]:focus {
-      border-color: var(--primary);
-    }
-
-    button {
-      width: 100%;
-      padding: 12px;
-      background: linear-gradient(135deg, var(--primary), var(--primary-hover));
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: transform 0.1s;
-    }
-
-    button:active {
-      transform: scale(0.98);
-    }
-
-    /* Chat felület elrendezése */
-    #chat-container {
-      width: 100%;
-      max-width: 800px;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      background-color: var(--card-bg);
-    }
-
-    @media (min-width: 801px) {
-      #chat-container {
-        height: 90vh;
-        border-radius: 15px;
-        box-shadow: 0 12px 40px rgba(0,0,0,0.4);
-        overflow: hidden;
-      }
-    }
-
-    /* Chat fejléc */
-    .chat-header {
-      background-color: #1e1e2a;
-      padding: 15px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #2d2d3f;
-    }
-
-    .chat-header h1 {
-      font-size: 18px;
-      font-weight: 600;
-    }
-
-    .user-info {
-      font-size: 14px;
-      color: var(--text-muted);
-    }
-
-    /* Üzenőzóna */
-    .chat-messages {
-      flex: 1;
-      padding: 20px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    /* Üzenetbuborékok */
-    .message {
-      max-width: 75%;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .message.incoming {
-      align-self: flex-start;
-    }
-
-    .message.outgoing {
-      align-self: flex-end;
-    }
-
-    .meta {
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-bottom: 4px;
-      padding: 0 5px;
-    }
-
-    .message.outgoing .meta {
-      text-align: right;
-    }
-
-    .bubble {
-      padding: 12px 16px;
-      border-radius: 16px;
-      font-size: 15px;
-      line-height: 1.4;
-      word-break: break-word;
-    }
-
-    .incoming .bubble {
-      background-color: var(--msg-in);
-      color: var(--text);
-      border-top-left-radius: 4px;
-    }
-
-    .outgoing .bubble {
-      background-color: var(--msg-out);
-      color: white;
-      border-top-right-radius: 4px;
-    }
-
-    /* Alsó beviteli sáv */
-    .chat-input-area {
-      padding: 15px 20px;
-      background-color: #1e1e2a;
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      border-top: 1px solid #2d2d3f;
-    }
-
-    .chat-input-area input {
-      flex: 1;
-      margin-bottom: 0;
-    }
-
-    .chat-input-area button {
-      width: auto;
-      padding: 12px 24px;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+    body { background-color: var(--bg-color); color: var(--text); height: 100vh; display: flex; justify-content: center; align-items: center; }
+    #name-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-color); z-index: 999; display: flex; justify-content: center; align-items: center; }
+    .login-box { background-color: var(--card-bg); padding: 30px; border-radius: 15px; text-align: center; width: 100%; max-width: 400px; }
+    input[type="text"] { width: 100%; padding: 12px; background-color: var(--bg-color); border: 2px solid #323246; border-radius: 8px; color: var(--text); margin-bottom: 15px; outline: none; }
+    button { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    #chat-container { width: 100%; max-width: 800px; height: 90vh; display: flex; flex-direction: column; background-color: var(--card-bg); border-radius: 15px; overflow: hidden; }
+    .chat-header { background-color: #1e1e2a; padding: 15px; display: flex; justify-content: space-between; border-bottom: 1px solid #2d2d3f; }
+    .chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+    .chat-input-area { padding: 15px; background-color: #1e1e2a; display: flex; gap: 12px; border-top: 1px solid #2d2d3f; }
+    .chat-input-area input { flex: 1; margin-bottom: 0; }
+    .chat-input-area button { width: auto; }
   </style>
 </head>
 <body>
@@ -230,7 +40,7 @@
   <div id="name-overlay">
     <div class="login-box">
       <h2>Üdvözöl a Minisoc Chat!</h2>
-      <p>Kérlek, adj meg egy becenevet a csatlakozáshoz.</p>
+      <p style="margin-bottom: 15px; color: var(--text-muted);">Adj meg egy becenevet a belépéshez.</p>
       <input type="text" id="username-input" placeholder="Becenév..." maxlength="20" autocomplete="off">
       <button id="join-btn">Belépés a chatbe</button>
     </div>
@@ -240,34 +50,31 @@
   <div id="chat-container">
     <div class="chat-header">
       <h1>💬 Minisoc Szoba</h1>
-      <div class="user-info" id="user-display">Profil: -</div>
+      <div id="user-display">Profil: -</div>
     </div>
-    
-    <div class="chat-messages" id="chat-messages">
-      <!-- Ide töltődnek be az üzenetek dinamikusan -->
-    </div>
-
+    <div class="chat-messages" id="chat-messages"></div>
     <div class="chat-input-area">
-      <input type="text" id="msg-input" placeholder="Írj egy üzenetet..." autocomplete="off" maxlength="500">
+      <input type="text" id="msg-input" placeholder="Írj egy üzenetet..." autocomplete="off">
       <button id="send-btn">Küldés</button>
     </div>
   </div>
 
   <script>
-    // Firebase inicializálása
-   const firebaseConfig = {
-  apiKey: "AIzaSyDuSzQ7zSdIjIvzq8JJeu0Wuxzjhj6P3Y0",
-  authDomain: "minisoc-chat.firebaseapp.com",
-  projectId: "minisoc-chat",
-  storageBucket: "minisoc-chat.firebasestorage.app",
-  messagingSenderId: "585133612559",
-  appId: "1:585133612559:web:12ad106b8490381a470d7a"
-};
+    // A TE SAJÁT CONFIGOD (Ellenőrizd, hogy a projektID stimmel-e)
+    const firebaseConfig = {
+      apiKey: "AIzaSyDuSzQ7zSdIjIvzq8JJeu0Wuxzjhj6P3Y0",
+      authDomain: "://firebaseapp.com",
+      projectId: "minisoc-chat",
+      storageBucket: "minisoc-chat.firebasestorage.app",
+      messagingSenderId: "585133612559",
+      appId: "1:585133612559:web:12ad106b8490381a470d7a"
+    };
+
+    // Firebase indítása
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
     let CurrentUser = "";
-    let UserIP = "0.0.0.0";
 
     const nameOverlay = document.getElementById('name-overlay');
     const usernameInput = document.getElementById('username-input');
@@ -277,41 +84,28 @@
     const msgInput = document.getElementById('msg-input');
     const sendBtn = document.getElementById('send-btn');
 
-   
-
-    // Ellenőrizzük, hogy járt-e már itt és mentettünk-e nevet a gépén
-    const savedName = localStorage.getItem('minisoc_username');
-    if (savedName) {
-      initChat(savedName);
-    }
-
-    // Belépés gomb kezelése
+    // Belépés gomb eseménykezelője
     joinBtn.addEventListener('click', () => {
-  console.log("A gomb meg lett nyomva!"); // Ezt a sort add hozzá!
-  const name = usernameInput.value.trim();
-  console.log("Beírt név:", name);        // Ezt is add hozzá!
+      console.log("Gombnyomás érzékelve!");
+      const name = usernameInput.value.trim();
+      
       if (name.length >= 2) {
-        localStorage.setItem('minisoc_username', name);
-        initChat(name);
+        console.log("Sikeres névellenőrzés:", name);
+        CurrentUser = name;
+        nameOverlay.style.display = 'none';
+        userDisplay.innerText = `Felhasználó: ${CurrentUser}`;
+        loadMessages();
       } else {
         alert("A névnek legalább 2 karakterből kell állnia!");
       }
     });
 
-    // Enter lenyomására is lépjen be a névválasztónál
+    // Enter gomb kezelése a névválasztónál
     usernameInput.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') joinBtn.click();
     });
 
-    // Chat elindítása és inicializálása
-    function initChat(username) {
-      CurrentUser = username;
-      nameOverlay.style.display = 'none';
-      userDisplay.innerText = `Felhasználó: ${CurrentUser}`;
-      loadMessages();
-    }
-
-    // Üzenetek küldése a Firestore adatbázisba
+    // Üzenetküldés
     function sendMessage() {
       const text = msgInput.value.trim();
       if (!text) return;
@@ -319,7 +113,6 @@
       db.collection('messages').add({
         user: CurrentUser,
         message: text,
-        ip: UserIP,
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
       })
       .then(() => {
@@ -327,8 +120,7 @@
         msgInput.focus();
       })
       .catch(err => {
-        console.error("Hiba az üzenet küldésekor: ", err);
-        alert("Hiba történt! Ellenőrizd, hogy a Firebase-ben 'Test mode'-ban indítottad-e el a Firestore-t!");
+        console.error("Küldési hiba:", err);
       });
     }
 
@@ -337,41 +129,33 @@
       if (e.key === 'Enter') sendMessage();
     });
 
-    // Valós idejű üzenetfogadás (onSnapshot)
+    // Üzenetek betöltése
     function loadMessages() {
       db.collection('messages')
         .orderBy('timestamp', 'asc')
         .limitToLast(100)
         .onSnapshot(snapshot => {
           chatMessages.innerHTML = "";
-
           snapshot.forEach(doc => {
             const data = doc.data();
             if (!data.user || !data.message) return;
 
-            const isOutgoing = data.user === CurrentUser;
-            
-            let timeStr = "";
-            if (data.timestamp) {
-              const date = data.timestamp.toDate();
-              timeStr = date.toLocaleTimeString('hu-HU', { hour: '2-digit', minute: '2-digit' });
-            } else {
-              const now = new Date();
-              timeStr = now.toLocaleTimeString('hu-HU', { hour: '2-digit', minute: '2-digit' });
-            }
-
             const msgDiv = document.createElement('div');
-            msgDiv.classList.add('message');
-            msgDiv.classList.add(isOutgoing ? 'outgoing' : 'incoming');
-
-            msgDiv.innerHTML = `
-              <div class="meta">${escapeHTML(data.user)} • ${timeStr}</div>
-              <div class="bubble">${escapeHTML(data.message)}</div>
-            `;
-
+            msgDiv.style.margin = "5px 0";
+            msgDiv.innerHTML = `<strong>${escapeHTML(data.user)}:</strong> ${escapeHTML(data.message)}`;
             chatMessages.appendChild(msgDiv);
           });
-
           chatMessages.scrollTop = chatMessages.scrollHeight;
         }, error => {
-console.error("Hiba az üzenetek beolvasásakor: ", error);});}// JAVÍTVA: Az escapeHTML függvény helyes formátumafunction escapeHTML(str) {return str.replace(/[&<>'"]/g, tag => ({'&': '&','<': '<','>': '>',"'": ''','"': '"'}[tag] || tag));}
+          console.error("Beolvasási hiba:", error);
+        });
+    }
+
+    function escapeHTML(str) {
+      return str.replace(/[&<>'"]/g, tag => ({ 
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&apos;', '"': '&quot;' 
+      }[tag] || tag));
+    }
+  </script>
+</body>
+</html>
