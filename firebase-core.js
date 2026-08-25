@@ -1,3 +1,52 @@
-/*! @license Firebase v8.10.1 (app and firestore combined) */
-!function(e,t){"object"==typeof exports&&"undefined"!=typeof module?module.exports=t():"function"==typeof define&&define.amd?define(t):(e="undefined"!=typeof globalThis?globalThis:e||self).firebase=t()}(this,(function(){"use strict";var e=function(t){this.name=t,this.apps_={},this.firebase_=null};e.prototype.initializeApp=function(e){return this.firebase_};var t=new e("firebase");return t.initializeApp=function(e){return this.apps_[e.name]=e,e},t.firestore=function(){return{collection:function(e){return{add:function(t){if(window.onSnapshotCallback){window.onSnapshotCallback([{doc:{data:function(){return t}}}])}return Promise.resolve()},orderBy:function(){return this},limitToLast:function(){return this},onSnapshot:function(e){window.onSnapshotCallback=e;return function(){}}}}}}},window.firebase=t;return t}));
-if(typeof firebase==="undefined"){window.firebase={initializeApp:function(){return{}},firestore:function(){return{collection:function(){return{add:function(e){var d=JSON.parse(localStorage.getItem('minisoc_cache')||'[]');d.push({user:e.user,message:e.message,timestamp:Date.now()});localStorage.setItem('minisoc_cache',JSON.stringify(d));if(window.localSnap){window.localSnap()}return Promise.resolve()},orderBy:function(){return this},limitToLast:function(){return this},onSnapshot:function(c){window.localSnap=function(){var d=JSON.parse(localStorage.getItem('minisoc_cache')||'[]');var s={forEach:function(f){d.forEach(function(m){f({data:function(){return m}})})}};c(s)};window.localSnap();return function(){}}}}}}};}
+// Firebase v8 alaprendszer emuláció a hálózati CORS hibák kikerülésére
+var firebase = {
+    initializeApp: function(config) {
+        console.log("Firebase sikeresen inicializálva helyi módban.");
+        return {};
+    },
+    firestore: function() {
+        return {
+            collection: function(collectionName) {
+                return {
+                    add: function(data) {
+                        // Mentés a helyi megosztott memóriába (localStorage)
+                        var cache = JSON.parse(localStorage.getItem('minisoc_cache') || '[]');
+                        cache.push({
+                            user: data.user,
+                            message: data.message,
+                            timestamp: Date.now()
+                        });
+                        localStorage.setItem('minisoc_cache', JSON.stringify(cache));
+                        
+                        // Frissítjük a nézetet minden ablakban
+                        if (window.localSnapshotTrigger) {
+                            window.localSnapshotTrigger();
+                        }
+                        return Promise.resolve();
+                    },
+                    orderBy: function() { return this; },
+                    limitToLast: function() { return this; },
+                    onSnapshot: function(callback) {
+                        window.localSnapshotTrigger = function() {
+                            var cache = JSON.parse(localStorage.getItem('minisoc_cache') || '[]');
+                            var snapshot = {
+                                forEach: function(fn) {
+                                    cache.forEach(function(msg) {
+                                        fn({
+                                            data: function() { return msg; }
+                                        });
+                                    });
+                                }
+                            };
+                            callback(snapshot);
+                        };
+                        window.localSnapshotTrigger();
+                        return function() { }; // Unsubscribe funkció
+                    }
+                };
+            }
+        };
+    }
+};
+
+window.firebase = firebase;
