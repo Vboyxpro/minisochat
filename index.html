@@ -33,7 +33,7 @@
   <div id="name-overlay">
     <div class="login-box">
       <h2>Üdvözöl a Minisoc Chat!</h2>
-      <p style="margin-bottom: 15px; color: var(--text-muted);">Adj meg egy becenevet a belépéshez.</p>
+      <p style="margin-bottom: 15px; color: var(--text-muted);">Adj meg een becenevet a belépéshez.</p>
       <input type="text" id="username-input" placeholder="Becenév..." maxlength="20" autocomplete="off">
       <button id="join-btn">Belépés a chatbe</button>
     </div>
@@ -52,10 +52,10 @@
     </div>
   </div>
 
-  <!-- CSAK ez a tiszta modul maradt, nincs semmilyen más script hivatkozás! -->
+  <!-- JAVÍTVA: cdnjs hálózat használata unpkg helyett a CORS tiltás kikerülésére -->
   <script type="module">
-    import { initializeApp } from "https://unpkg.com";
-    import { getFirestore, collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp } from "https://unpkg.com";
+    import { initializeApp } from "https://cloudflare.com";
+    import { getFirestore, collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp } from "https://cloudflare.com";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDuSzQ7zSdIjIvzq8JJeu0Wuxzjhj6P3Y0",
@@ -80,6 +80,7 @@
     const sendBtn = document.getElementById('send-btn');
 
     joinBtn.addEventListener('click', () => {
+      console.log("Gombnyomás sikeres!");
       const name = usernameInput.value.trim();
       if (name.length >= 2) {
         CurrentUser = name;
