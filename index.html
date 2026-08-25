@@ -277,11 +277,7 @@
     const msgInput = document.getElementById('msg-input');
     const sendBtn = document.getElementById('send-btn');
 
-    // JAVÍTVA: Pontos ipify API végpont használata, hogy JSON-t kapjunk vissza
-    fetch('https://ipify.org')
-      .then(res => res.json())
-      .then(data => { UserIP = data.ip; })
-      .catch(() => console.log("IP lekérés sikertelen, alapértelmezett érték használata."));
+   
 
     // Ellenőrizzük, hogy járt-e már itt és mentettünk-e nevet a gépén
     const savedName = localStorage.getItem('minisoc_username');
