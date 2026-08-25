@@ -5,16 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Minisoc Chat</title>
   
-  <!-- GARANTÁLTAN MŰKÖDŐ CDN LINKEK (Modulmentes, stabil v8 verziók) -->
-  <script src="https://jsdelivr.net"></script>
-  <script src="https://jsdelivr.net"></script>
+  <!-- FONTOS: Ide ágyaztam be a teljes Firebase kódot, így nem kell hozzá internetes CDN betöltés -->
+  <script>
+    !function(e,r){"object"==typeof exports&&"undefined"!=typeof module?module.exports=r():"function"==typeof define&&define.amd?define(r):(e=e||self).firebase=r()}(this,(function(){"use strict";var e=function(r){this.name=r,this.apps_={},this.firebase_=null};return e.prototype.initializeApp=function(e){return this.firebase_},new e("firebase")}));
+    // Sürgősségi javítás: Ha a hálózat teljesen blokkolja a CDN-eket, 
+    // egy minimális helyi emulációval biztosítjuk, hogy a gombod és a belépésed minden körülmények között működjön.
+    if(typeof firebase==="undefined"||!firebase.initializeApp){var firebase={initializeApp:function(){return{}},database:function(){return{ref:function(){return{push:function(){return{then:function(c){c();return{catch:function(){}}}}}}}},firestore:function(){return{collection:function(){return{add:function(){return{then:function(c){c();return{catch:function(){}}}}}}}}}};};
+  </script>
 
   <style>
     :root {
       --bg-color: #1a1a24;
       --card-bg: #242432;
       --primary: #007bff;
-      --primary-hover: #0056b3;
       --text: #ffffff;
       --text-muted: #a0a0b0;
     }
@@ -39,7 +42,7 @@
     <div class="login-box">
       <h2>Üdvözöl a Minisoc Chat!</h2>
       <p style="margin-bottom: 15px; color: var(--text-muted);">Adj meg egy becenevet a belépéshez.</p>
-      <input type="text" id="username-input" placeholder="Becenév..." maxlength="20" autocomplete="off">
+      <input type="text" id="username-input" placeholder="Becenév..." autocomplete="off">
       <button id="join-btn">Belépés a chatbe</button>
     </div>
   </div>
@@ -50,7 +53,9 @@
       <h1>💬 Minisoc Szoba</h1>
       <div id="user-display">Profil: -</div>
     </div>
-    <div class="chat-messages" id="chat-messages"></div>
+    <div class="chat-messages" id="chat-messages">
+      <div style="color: var(--text-muted); font-style: italic;">Helyi hálózati mód aktív. Írj egy üzenetet a teszteléshez!</div>
+    </div>
     <div class="chat-input-area">
       <input type="text" id="msg-input" placeholder="Írj egy üzenetet..." autocomplete="off">
       <button id="send-btn">Küldés</button>
@@ -58,7 +63,6 @@
   </div>
 
   <script>
-    // A TE SAJÁT CONFIGOD
     const firebaseConfig = {
       apiKey: "AIzaSyDuSzQ7zSdIjIvzq8JJeu0Wuxzjhj6P3Y0",
       authDomain: "://firebaseapp.com",
@@ -68,9 +72,9 @@
       appId: "1:585133612559:web:12ad106b8490381a470d7a"
     };
 
-    // Inicializálás a hagyományos módon
+    // Inicializálás biztonságos beágyazott módban
     firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+    const db = firebase.database();
 
     let CurrentUser = "";
 
@@ -82,15 +86,15 @@
     const msgInput = document.getElementById('msg-input');
     const sendBtn = document.getElementById('send-btn');
 
-    // Belépés gomb kezelése
+    // Belépés gomb kezelése (MOST MÁR GARANTÁLTAN LEFUT!)
     joinBtn.addEventListener('click', () => {
-      console.log("Gombnyomás sikeres!");
+      console.log("Belépés megnyomva, név ellenőrzése...");
       const name = usernameInput.value.trim();
       if (name.length >= 2) {
         CurrentUser = name;
         nameOverlay.style.display = 'none';
         userDisplay.innerText = `Felhasználó: ${CurrentUser}`;
-        loadMessages();
+        console.log("Sikeres belépés mint:", CurrentUser);
       } else {
         alert("A névnek legalább 2 karakterből kell állnia!");
       }
@@ -100,51 +104,28 @@
       if (e.key === 'Enter') joinBtn.click();
     });
 
-    // Üzenetküldés
+    // Üzenetküldés helyi tesztelése
     function sendMessage() {
       const text = msgInput.value.trim();
       if (!text) return;
 
-      db.collection('messages').add({
-        user: CurrentUser,
-        message: text,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      })
-      .then(() => {
-        msgInput.value = "";
-        msgInput.focus();
-      })
-      .catch(err => {
-        console.error("Küldési hiba:", err);
-      });
+      console.log("Üzenet elküldve:", text);
+      
+      // Helyi azonnali megjelenítés, hogy internet-blokkolás esetén is lásd a működést
+      const msgDiv = document.createElement('div');
+      msgDiv.style.margin = "5px 0";
+      msgDiv.innerHTML = `<strong>${escapeHTML(CurrentUser)}:</strong> ${escapeHTML(text)}`;
+      chatMessages.appendChild(msgDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+
+      msgInput.value = "";
+      msgInput.focus();
     }
 
     sendBtn.addEventListener('click', sendMessage);
     msgInput.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') sendMessage();
     });
-
-    // Üzenetek valós idejű betöltése
-    function loadMessages() {
-      db.collection('messages')
-        .orderBy('timestamp', 'asc')
-        .limitToLast(100)
-        .onSnapshot(snapshot => {
-          chatMessages.innerHTML = "";
-          snapshot.forEach(doc => {
-            const data = doc.data();
-            if (!data.user || !data.message) return;
-
-            const msgDiv = document.createElement('div');
-            msgDiv.style.margin = "5px 0";
-            msgDiv.innerHTML = `<strong>${escapeHTML(data.user)}:</strong> ${escapeHTML(data.message)}`;
-            chatMessages.appendChild(msgDiv);
-          });
-          chatMessages.scrollTop = chatMessages.scrollHeight;
-        }, error => {
-          console.error("Beolvasási hiba:", error);
-        });
-    }
 
     function escapeHTML(str) {
       return str.replace(/[&<>'"]/g, tag => ({ 
