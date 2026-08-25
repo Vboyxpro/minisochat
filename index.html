@@ -287,7 +287,9 @@
 
     // Belépés gomb kezelése
     joinBtn.addEventListener('click', () => {
-      const name = usernameInput.value.trim();
+  console.log("A gomb meg lett nyomva!"); // Ezt a sort add hozzá!
+  const name = usernameInput.value.trim();
+  console.log("Beírt név:", name);        // Ezt is add hozzá!
       if (name.length >= 2) {
         localStorage.setItem('minisoc_username', name);
         initChat(name);
